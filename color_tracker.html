@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>tracking.js - first tracking</title>
+  <script src="tracking-min.js"></script>
+  <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+  
+</head>
+<body>
+  <video id="myVideo" width="400" height="300" preload autoplay loop muted>
+    <source src='zuck.mp4' type="video/mp4" />
+  </video>
+  <button id='on' >Tracker on</button>
+  <button id='off'>Tracker off</button>
+  <script>
+  
+  var _t = null;
+  $(document).ready(function() {
+
+    //var ct = tracking.ColorTracker
+    
+
+    tracking.ColorTracker.registerColor('green', function(r, g, b) {
+        if (r == 0 && g == 250 && b == 0) {
+            return true;
+        }
+        return false;
+    });
+
+    tracking.ColorTracker.registerColor('black', function(r, g, b) {
+        if (r < 50 && g < 50 && b < 50) {
+            return true;
+        }
+        return false;
+    });
+
+
+    var colors = new tracking.ColorTracker(['magenta', 'cyan', 'yellow','green']);
+
+    colors.on('track', function(event) {
+        if (event.data.length === 0) {
+            // No colors were detected in this frame.
+        } else {
+            event.data.forEach(function(rect) {
+                console.log(rect.x, rect.y, rect.height, rect.width, rect.color);
+            });
+        }
+    });
+
+    tracking.track('#myVideo', colors);
+
+    $('#on').click(function(e){
+        _t.run();
+    });
+  });
+  </script>
+</body>
+</html>
